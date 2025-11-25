@@ -2,6 +2,8 @@
 
 A powerful web page translation tool that supports iOS native translation and mock translator for testing.
 
+[Teak Browser](https://apps.apple.com/us/app/teak-browser-user-script/id6443938027) build in translator js engine.
+
 ## 📋 Project Overview
 
 Teak Translator is a modular TypeScript web translation library, fully restored from the logic of original.js, with the following features:
