@@ -1,0 +1,45 @@
+node_modules/
+dist/
+*.log
+.DS_Store
+.vscode/
+.idea/
+*.js.map
+*.d.ts.map
+
+# iOS / Xcode
+*.xcuserstate
+*.xcuserdatad
+xcuserdata/
+*.moved-aside
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.pbxuser
+!default.pbxuser
+*.xcworkspace
+!default.xcworkspace
+DerivedData/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+build/
+*.swp
+*~.nib
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# CocoaPods
+Pods/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+# Code Injection
+iOSInjectionProject/

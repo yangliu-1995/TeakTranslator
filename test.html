@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teak Translator - Chrome Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .controls {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button.danger {
+            background: #dc3545;
+        }
+        button.danger:hover {
+            background: #c82333;
+        }
+        .status {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 12px;
+            border-radius: 4px;
+            margin-top: 10px;
+            display: none;
+        }
+        .content {
+            background: white;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        h1 {
+            color: #333;
+        }
+        h2 {
+            color: #666;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        .highlight {
+            background: yellow;
+            padding: 2px 4px;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        .console-output {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+        .console-output .log {
+            color: #4ec9b0;
+        }
+        .console-output .error {
+            color: #f48771;
+        }
+        .console-output .warn {
+            color: #dcdcaa;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls" translate="no">
+        <h2>🧪 Teak Translator Test Console</h2>
+        <div>
+            <button onclick="startPageTranslation()">🌐 Start Page Translation</button>
+            <button onclick="stopTranslation()" class="danger">⏹️ Stop Translation</button>
+            <button onclick="switchToMock()">🔄 Switch to Mock</button>
+            <button onclick="checkStatus()">ℹ️ Check Status</button>
+        </div>
+        <div id="status" class="status"></div>
+        <div class="console-output" id="console"></div>
+    </div>
+
+    <div class="content">
+        <h1>Welcome to Teak Translator Test Page</h1>
+        
+        <h2>Introduction</h2>
+        <p>
+            This is a test page for <span class="highlight">Teak Translator</span>. 
+            The translator will automatically detect the environment and use the appropriate translation API.
+        </p>
+
+        <h2>Features</h2>
+        <ul>
+            <li>Automatic DOM traversal and translation</li>
+            <li>Support for dynamic content (Mutation Observer)</li>
+            <li>Visibility detection for performance optimization</li>
+            <li>Support for iframes and shadow DOM</li>
+            <li>RTL language support</li>
+            <li>Translation cache for better performance</li>
+        </ul>
+
+        <h2>How to Test</h2>
+        <ol>
+            <li>Click <code>Start Page Translation</code> to translate the entire page</li>
+            <li>Watch the console output for translation progress</li>
+            <li>Click <code>Stop Translation</code> to restore the original content</li>
+            <li>Select some text and open Chrome DevTools console</li>
+            <li>Use the command provided in TEST.md for selection translation</li>
+        </ol>
+
+        <h2>Sample Content</h2>
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+            Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        </p>
+        
+        <div style="border: 1px solid #ccc; padding: 15px; margin: 10px 0;">
+            <h3>Nested Content</h3>
+            <p>This is a nested paragraph with <a href="#">a link</a> and some <strong>bold text</strong>.</p>
+            <input type="text" placeholder="Input placeholder text" style="padding: 5px; margin: 5px 0;">
+            <button>Button Text</button>
+        </div>
+
+        <h2>Translation Result Format</h2>
+        <p>
+            When using MockTranslator, the translated text will be wrapped like this:
+            <code>[traslated]original text[/traslated]</code>
+        </p>
+
+        <h2>More Text for Testing</h2>
+        <p>
+            The quick brown fox jumps over the lazy dog. 
+            This sentence contains every letter in the English alphabet.
+        </p>
+        <p>
+            Sphinx of black quartz, judge my vow. 
+            Pack my box with five dozen liquor jugs.
+        </p>
+    </div>
+
+    <script src="dist/TeakTranslator.js"></script>
+    <script>
+        // Log output to page
+        const consoleDiv = document.getElementById('console');
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+
+        function addLog(message, type = 'log') {
+            const timestamp = new Date().toLocaleTimeString();
+            const line = document.createElement('div');
+            line.className = type;
+            line.textContent = `[${timestamp}] ${message}`;
+            consoleDiv.appendChild(line);
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        }
+
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            addLog(args.join(' '), 'log');
+        };
+
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            addLog(args.join(' '), 'error');
+        };
+
+        console.warn = function(...args) {
+            originalWarn.apply(console, args);
+            addLog(args.join(' '), 'warn');
+        };
+
+        // Show status
+        function showStatus(message, type = 'success') {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.style.display = 'block';
+            statusDiv.style.background = type === 'success' ? '#d4edda' : '#f8d7da';
+            statusDiv.style.color = type === 'success' ? '#155724' : '#721c24';
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        // Start page translation
+        function startPageTranslation() {
+            console.log('Starting page translation...');
+            
+            Teak.Translator.startPageTranslation(
+                'en',
+                'zh-CN',
+                false,
+                () => {
+                    console.log('✓ Partial translation completed');
+                    showStatus('Partial translation completed');
+                },
+                {
+                    onTranslateApiCalled: () => {
+                        console.log('→ Translation API called');
+                    },
+                    incrementTotalCharacterTranslated: (count) => {
+                        console.log(`→ Characters translated: ${count}`);
+                    }
+                },
+                (error) => {
+                    console.error('✗ Translation error:', error);
+                    showStatus('Translation failed: ' + error, 'error');
+                }
+            );
+            
+            showStatus('Translation started, check console output');
+        }
+
+        // Stop translation
+        function stopTranslation() {
+            console.log('Stopping translation and restoring page...');
+            
+            Teak.Translator.stopPageTranslation().then(() => {
+                console.log('✓ Translation stopped, page restored');
+                showStatus('Page restored');
+            });
+        }
+
+        // Switch to Mock translator
+        function switchToMock() {
+            const mockTranslator = new Teak.Translator.MockTranslator();
+            Teak.Translator.setTranslatorApi(mockTranslator);
+            console.log('✓ Switched to MockTranslator');
+            showStatus('Switched to MockTranslator');
+        }
+
+        // Check status
+        function checkStatus() {
+            const currentTranslator = Teak.Translator.getTranslatorApi();
+            console.log('Current translator:', currentTranslator);
+            console.log('Translator type:', currentTranslator.constructor.name);
+            showStatus('Currently using: ' + currentTranslator.constructor.name);
+        }
+
+        // Page load complete
+        window.addEventListener('load', () => {
+            console.log('='.repeat(50));
+            console.log('Teak Translator test page loaded');
+            console.log('='.repeat(50));
+            console.log('Current translator:', Teak.Translator.getTranslatorApi().constructor.name);
+            console.log('');
+            console.log('Available commands:');
+            console.log('  • startPageTranslation() - Start page translation');
+            console.log('  • stopTranslation() - Stop translation');
+            console.log('  • switchToMock() - Switch to Mock translator');
+            console.log('  • checkStatus() - Check current status');
+            console.log('');
+            console.log('See TEST.md for more testing commands');
+            console.log('='.repeat(50));
+        });
+    </script>
+</body>
+</html>
