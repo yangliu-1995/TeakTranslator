@@ -69,7 +69,7 @@ struct ContentView: View {
         window.tkTranslator = tkTranslator
         \(defineScript)
         """
-        configuration.userContentController.addUserScript(WKUserScript(source: script, injectionTime: .atDocumentEnd, forMainFrameOnly: true, in: .defaultClient))
+        configuration.userContentController.addUserScript(WKUserScript(source: script, injectionTime: .atDocumentEnd, forMainFrameOnly: false, in: .defaultClient))
         webPage = WebPage(configuration: configuration)
     }
 
